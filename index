@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Partner Occasions & Gifting Board</title>
+<style>
+  :root{
+    --ink:#1b2a2e;
+    --paper:#f3efe6;
+    --panel:#ffffff;
+    --line: #d9d2c2;
+    --teal:#0f4c46;
+    --teal-deep:#0a332f;
+    --coral:#d1603d;
+    --coral-soft:#f4ded3;
+    --gold:#b8923f;
+    --muted:#6b6459;
+    --ok:#3f6b4a;
+    --warn:#a8562f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family: 'Iowan Old Style','Georgia',serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:36px 24px 80px;}
+
+  header.top{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    border-bottom:2px solid var(--ink); padding-bottom:18px; margin-bottom:8px;
+    gap:20px; flex-wrap:wrap;
+  }
+  .eyebrow{
+    font-family:'Helvetica Neue',Arial,sans-serif; text-transform:uppercase;
+    letter-spacing:.14em; font-size:11px; color:var(--coral); font-weight:700; margin-bottom:6px;
+  }
+  h1{font-size:34px; margin:0; line-height:1.05; font-weight:600;}
+  .top-meta{
+    font-family:'Helvetica Neue',Arial,sans-serif; font-size:12px; color:var(--muted);
+    text-align:right; max-width:280px;
+  }
+  .note-banner{
+    font-family:'Helvetica Neue',Arial,sans-serif; font-size:13px; line-height:1.55;
+    background:var(--teal); color:#eef4f0; padding:14px 18px; border-radius:2px;
+    margin:20px 0 32px; display:flex; gap:12px; align-items:flex-start;
+  }
+  .note-banner b{color:#fff;}
+  .note-banner .dot{width:7px;height:7px;border-radius:50%;background:var(--coral);margin-top:6px;flex:none;}
+
+  nav.tabs{
+    display:flex; gap:2px; margin-bottom:28px; font-family:'Helvetica Neue',Arial,sans-serif;
+    border-bottom:1px solid var(--line);
+  }
+  nav.tabs button{
+    font-family:inherit; font-size:12.5px; letter-spacing:.03em; text-transform:uppercase;
+    padding:10px 16px; background:none; border:none; cursor:pointer; color:var(--muted);
+    border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:600;
+  }
+  nav.tabs button.active{color:var(--teal-deep); border-bottom-color:var(--coral);}
+  nav.tabs button .count{
+    background:var(--line); color:var(--ink); border-radius:10px; padding:1px 7px; font-size:10.5px; margin-left:6px;
+  }
+
+  section{display:none;} section.active{display:block;}
+
+  .row-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:3px;
+    padding:16px 18px; margin-bottom:10px; display:grid;
+    grid-template-columns:64px 1fr auto; gap:16px; align-items:center;
+  }
+  .datebox{
+    text-align:center; border-right:1px solid var(--line); padding-right:14px;
+  }
+  .datebox .num{font-size:26px; font-weight:700; color:var(--teal-deep); line-height:1;}
+  .datebox .mon{font-family:'Helvetica Neue',Arial,sans-serif; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+  .who .name{font-size:17px; font-weight:600;}
+  .who .sub{font-family:'Helvetica Neue',Arial,sans-serif; font-size:12.5px; color:var(--muted); margin-top:2px;}
+  .tag{
+    font-family:'Helvetica Neue',Arial,sans-serif; font-size:10.5px; text-transform:uppercase;
+    letter-spacing:.06em; padding:3px 9px; border-radius:20px; font-weight:700;
+  }
+  .tag.bday{background:var(--coral-soft); color:var(--coral);}
+  .tag.anniv{background:#e4ecdf; color:var(--ok);}
+  .right-meta{text-align:right; font-family:'Helvetica Neue',Arial,sans-serif;}
+  .days-left{font-size:13px; font-weight:700; color:var(--teal-deep);}
+  .days-left.soon{color:var(--coral);}
+
+  .grid-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px;}
+  .gift-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:3px; padding:18px;
+    position:relative; overflow:hidden;
+  }
+  .gift-card::before{
+    content:""; position:absolute; top:0; left:0; width:5px; height:100%; background:var(--swatch,var(--gold));
+  }
+  .gift-card .name{font-size:16.5px; font-weight:700; margin-bottom:2px;}
+  .gift-card .role{font-family:'Helvetica Neue',Arial,sans-serif; font-size:12px; color:var(--muted); margin-bottom:12px;}
+  .chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
+  .chip{
+    font-family:'Helvetica Neue',Arial,sans-serif; font-size:11px; background:var(--paper);
+    border:1px solid var(--line); padding:3px 8px; border-radius:20px; color:var(--ink);
+  }
+  .suggestion{
+    font-size:13.5px; line-height:1.55; border-top:1px dashed var(--line); padding-top:10px;
+  }
+  .suggestion b{color:var(--teal-deep);}
+  .tier{
+    display:inline-block; margin-top:10px; font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; font-weight:700; color:var(--gold);
+  }
+
+  .flag-card{
+    background:#fbf3ec; border:1px solid #e8c9ac; border-left:4px solid var(--warn);
+    padding:12px 16px; border-radius:2px; margin-bottom:8px;
+    font-family:'Helvetica Neue',Arial,sans-serif; font-size:13px; line-height:1.5;
+  }
+  .flag-card b{color:var(--warn);}
+
+  .empty{font-family:'Helvetica Neue',Arial,sans-serif; color:var(--muted); font-size:13px; padding:20px 0;}
+  .subhead{font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-family:'Helvetica Neue',Arial,sans-serif; margin:28px 0 12px; font-weight:700;}
+  .subhead:first-child{margin-top:0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="eyebrow">Partner Relations · Occasions Board</div>
+      <h1>Who to celebrate next</h1>
+    </div>
+    <div class="top-meta">
+      Built from your Google Form responses sheet.<br>
+      Re-run this after new form submissions to refresh.
+    </div>
+  </header>
+
+  <div class="note-banner">
+    <div class="dot"></div>
+    <div>
+      <b>On viewing this in Outlook:</b> this board itself lives outside Outlook. To have these dates appear on your
+      shared company Outlook calendar, publish this data as a Google Calendar (via script or manual entry), grab its
+      secret iCal link, and have your Exchange admin add it as an internet calendar subscription on the shared
+      calendar. Outlook then refreshes that feed on its own schedule &mdash; typically every few hours &mdash; with no
+      further manual work.
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <button data-tab="upcoming" class="active">Upcoming <span class="count" id="c-upcoming"></span></button>
+    <button data-tab="gifts">Gift Suggestions <span class="count" id="c-gifts"></span></button>
+    <button data-tab="flags">Needs Attention <span class="count" id="c-flags"></span></button>
+  </nav>
+
+  <section id="upcoming" class="active">
+    <div class="subhead">Next 90 days</div>
+    <div id="upcoming-list"></div>
+  </section>
+
+  <section id="gifts">
+    <div class="grid-cards" id="gifts-list"></div>
+  </section>
+
+  <section id="flags">
+    <div id="flags-list"></div>
+  </section>
+
+</div>
+
+<script>
+// ---------- Raw data pulled from the Google Form response sheet ----------
+const RAW = [
+ {ts:"7/8/2024",name:"Josh Ong",status:"Married",dob:"3/12/1981",anniv:"12/2/2017",color:"purple",food:"Pasta",company:"Ediphi Training Programs Inc.",position:"Recruitment Manager",tenure:"6months"},
+ {ts:"7/9/2024",name:"Maria Cecilia M Saenz",status:"Single",dob:"7/24/1968",anniv:"",color:"Red",food:"salad",company:"University of Caloocan City",position:"Registrar 3",tenure:"30 years"},
+ {ts:"7/18/2024",name:"Aileen Costoy",status:"Single",dob:"11/2/1988",anniv:"",color:"black",food:"sinigang",company:"Magsaysay Center for Hospitality and Culinary Arts",position:"Placement Officer",tenure:"2"},
+ {ts:"7/18/2024",name:"Manuel Allen Patolot",status:"Single",dob:"7/18/2000",anniv:"",color:"White",food:"Chicken Wings",company:"Magsaysay Center for Hospitality & Culinary Arts Mandaluyong",position:"Placement Officer",tenure:"Started last February 5, 2024"},
+ {ts:"7/18/2024",name:"Jhelai Dela Cruz",status:"Single",dob:"5/24/1993",anniv:"",color:"Yellow",food:"Hakaw",company:"Magsaysay Center for Hospitality and Culinary Arts Inc.",position:"Senior Training Officer",tenure:"12"},
+ {ts:"7/19/2024",name:"Remedios M. Najera",status:"Married",dob:"11/18/2018",anniv:"11/18/1978",color:"green",food:"everything (not spicy)",company:"NU Manila",position:"CTHM Linkages Coordinator",tenure:"6"},
+ {ts:"7/22/2024",name:"Lacsamana Neil Enrico A.",status:"Married",dob:"11/21/1995",anniv:"10/27/2023",color:"RED",food:"Bibimbap",company:"Colegio de San Juan de Letran",position:"Instructor",tenure:"2"},
+ {ts:"7/22/2024",name:"Terrence Gil Vicencio",status:"Married",dob:"9/11/1991",anniv:"6/11/2017",color:"Blue",food:"Lechon Kawali",company:"Colegio de San Juan de Letran",position:"Officer-in-Charge",tenure:"1 year, 6 months"},
+ {ts:"7/22/2024",name:"Jeelet Tiongson",status:"Single",dob:"2/26/1989",anniv:"",color:"white",food:"salad",company:"Colegio de San Juan de Letran",position:"Tourism Coordinator / Faculty",tenure:"new"},
+ {ts:"8/21/2024",name:"Ma. Luisa Doctolero-Wakat",status:"Married",dob:"2/11/2024",anniv:"4/17/2007",color:"Blue",food:"Asian Cuisine",company:"Philippine Institute of Culinary Arts",position:"School Director",tenure:"4 years"},
+ {ts:"8/21/2024",name:"Michelle Grad Mamaril-Balinte",status:"Married",dob:"3/31/0089",anniv:"",color:"none",food:"none",company:"University of the Cordilleras",position:"Academic Dean, CHTM",tenure:"12"},
+ {ts:"8/21/2024",name:"Lloyd Diawa",status:"Single",dob:"4/24/1994",anniv:"",color:"navy blue",food:"n/a",company:"University of the Cordilleras",position:"Program Chair / Practicum Coordinator",tenure:"6"},
+ {ts:"8/22/2024",name:"Lee Majors Fajilan",status:"Single",dob:"11/20/1978",anniv:"",color:"Blue and Red",food:"Japanese, Kare Kare, Italian",company:"Saint Louis University",position:"Professor",tenure:"19"},
+ {ts:"12/16/2024",name:"Jaecee Tanaya",status:"Single",dob:"11/29/1999",anniv:"",color:"orange",food:"pasta",company:"Lyceum of the Philippines",position:"Internship Coordinator",tenure:"3"},
+ {ts:"12/16/2024",name:"Michael Caballero",status:"Single",dob:"4/30/1985",anniv:"",color:"blue",food:"any",company:"LPU Manila",position:"Chairperson",tenure:"10"},
+ {ts:"8/29/2025",name:"James Raphael E. Santiago",status:"Single",dob:"12/31/1989",anniv:"",color:"Blue",food:"Chicken",company:"St. Benilde Center for Global Competence Inc.",position:"Department Head",tenure:"8 years"},
+ {ts:"8/29/2025",name:"Mark Alvin Lazaro",status:"Single",dob:"8/28/2025",anniv:"",color:"Blue",food:"Fried chicken",company:"Gordon College",position:"Dean",tenure:"18"},
+ {ts:"8/29/2025",name:"Vince Richard Gomez",status:"Single",dob:"8/6/1992",anniv:"6/12/2021",color:"Violet",food:"Sinigang",company:"Gordon College",position:"Program Coordinator, BSHM",tenure:"5"},
+ {ts:"10/16/2025",name:"Ma Concepcion Vinarta",status:"Married",dob:"12/1/1967",anniv:"",color:"Blue",food:"Adobo",company:"University of St La Salle - ICA",position:"Admin",tenure:"16"},
+ {ts:"7/15/2026",name:"Josh Ong",status:"Married",dob:"7/16/1981",anniv:"2/18/2007",color:"Shades of Purple",food:"Cheesecake",company:"Ediphi",position:"ADOS",tenure:"2"},
+];
+
+// Rows with no timestamp / mostly blank contact+company fields (likely stubs, not real submissions)
+const INCOMPLETE = [
+  "Ann Mizer Hernandez","Evangeline Timbang","Lilibeth Aragon","Paolo S. Laurel","Dr. Abram Emmanuel",
+  "Dr. Leomar Jay R. Oblianda","Dean Joji","Dr. Gileth Maraquilla","Raffy Yroma","Maricel Diaz",
+  "Carolina Roces","Rhea Adriatico"
+];
+
+// ---------- Dedup: keep latest timestamp per name ----------
+function dedupe(rows){
+  const byName = {};
+  rows.forEach(r=>{
+    const t = new Date(r.ts).getTime();
+    if(!byName[r.name] || t > byName[r.name]._t){ byName[r.name] = {...r, _t:t}; }
+  });
+  return Object.values(byName);
+}
+const DATA = dedupe(RAW);
+
+// ---------- Helpers ----------
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function parseMD(str){
+  if(!str) return null;
+  const m = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+  if(!m) return null;
+  return {month:parseInt(m[1],10), day:parseInt(m[2],10), year:parseInt(m[3],10)};
+}
+function nextOccurrence(md){
+  const today = new Date("2026-07-15"); today.setHours(0,0,0,0);
+  if(!md || md.month<1 || md.month>12 || md.day<1 || md.day>31) return null;
+  let year = today.getFullYear();
+  let d = new Date(year, md.month-1, md.day);
+  if(d < today) d = new Date(year+1, md.month-1, md.day);
+  const days = Math.round((d-today)/86400000);
+  return {date:d, days};
+}
+function parseTenureYears(str, name){
+  if(!str) return null;
+  const s = str.toLowerCase().trim();
+  if(s === "new" || s === "n/a" || s === "none" || s==="na") return 0;
+  let years = 0, found=false;
+  const yMatch = s.match(/(\d+(\.\d+)?)\s*year/);
+  const moMatch = s.match(/(\d+(\.\d+)?)\s*month/);
+  if(yMatch){years += parseFloat(yMatch[1]); found=true;}
+  if(moMatch){years += parseFloat(moMatch[1])/12; found=true;}
+  if(!found){
+    const startedMatch = s.match(/started.*?(\w+ \d{1,2},? \d{4})/);
+    if(startedMatch){
+      const start = new Date(startedMatch[1]);
+      if(!isNaN(start)){ years = (new Date("2026-07-15") - start)/(365.25*86400000); found=true; }
+    }
+  }
+  if(!found){
+    const plain = s.match(/^(\d+(\.\d+)?)$/);
+    if(plain){ years = parseFloat(plain[1]); found=true; }
+  }
+  return found ? Math.round(years*10)/10 : null;
+}
+function tenureBand(yrs){
+  if(yrs===null) return {label:"Unknown tenure", tier:0};
+  if(yrs < 1) return {label:"New hire (<1 yr)", tier:1};
+  if(yrs < 4) return {label:"Early career (1\u20133 yrs)", tier:2};
+  if(yrs < 10) return {label:"Established (4\u20139 yrs)", tier:3};
+  return {label:"Veteran (10+ yrs)", tier:4};
+}
+function positionTier(pos){
+  const p = (pos||"").toLowerCase();
+  if(/(dean|director|chairperson|chair\b|department head|school director)/.test(p)) return {label:"Senior leadership", tier:3};
+  if(/(manager|coordinator|officer-in-charge|instructor|professor|coor)/.test(p)) return {label:"Mid-level / faculty", tier:2};
+  return {label:"Staff / officer", tier:1};
+}
+const COLOR_SWATCH = {
+  purple:"#7b5ea7", red:"#c0392b", black:"#2b2b2b", white:"#c9c2ae", yellow:"#c9a227",
+  green:"#4a7a4e", blue:"#3a6ea5", violet:"#7d5ba6", orange:"#c9772e", "navy blue":"#1f3a5f",
+  "blue and red":"#8a4a4a", "shades of purple":"#7b5ea7", none:"#b8923f", "n/a":"#b8923f"
+};
+function swatchFor(color){
+  const k = (color||"").toLowerCase();
+  for(const key in COLOR_SWATCH){ if(k.includes(key)) return COLOR_SWATCH[key]; }
+  return "#b8923f";
+}
+function giftSuggestion(person, tYears, tBand, pTier){
+  const food = (person.food||"").trim();
+  const color = (person.color||"").trim();
+  const hasFood = food && !/^(none|na|n\/a|any)$/i.test(food);
+  const hasColor = color && !/^(none|na|n\/a)$/i.test(color);
+
+  let base;
+  if(hasFood && hasColor){
+    base = `A ${color.toLowerCase()}-themed gift set built around ${food.toLowerCase()} \u2014 think a curated hamper or dine-in voucher.`;
+  } else if(hasFood){
+    base = `A gift centered on ${food.toLowerCase()} \u2014 a hamper, restaurant voucher, or homemade version.`;
+  } else if(hasColor){
+    base = `A well-chosen item in ${color.toLowerCase()} \u2014 planner, mug, or accessory, since no food preference is on file.`;
+  } else {
+    base = `Favorite food/color aren't on file yet \u2014 default to a versatile, professional gift (premium stationery, coffee/tea set).`;
+  }
+
+  let scale;
+  if(pTier.tier>=3 && tBand.tier>=3) scale = "Milestone-tier: this is a senior, long-tenured partner \u2014 lean toward a premium, personalized gift.";
+  else if(pTier.tier>=3) scale = "Leadership-tier: keep it polished and professional, mid-to-upper budget.";
+  else if(tBand.tier>=4) scale = "Loyalty-tier: long tenure deserves a thoughtful, slightly elevated gift regardless of title.";
+  else if(tBand.tier<=1) scale = "Welcome-tier: a smaller, warm welcome gift is appropriate.";
+  else scale = "Standard-tier: a mid-range, thoughtful gift fits well.";
+
+  return base + " " + scale;
+}
+
+// ---------- Build Upcoming tab ----------
+const events = [];
+DATA.forEach(p=>{
+  const dobMD = parseMD(p.dob);
+  const annMD = parseMD(p.anniv);
+  const dobNext = dobMD ? nextOccurrence(dobMD) : null;
+  const annNext = (annMD && p.status==="Married") ? nextOccurrence(annMD) : null;
+  if(dobNext) events.push({type:"Birthday", person:p, ...dobNext});
+  if(annNext) events.push({type:"Work Anniversary", person:p, ...annNext});
+});
+events.sort((a,b)=>a.days-b.days);
+const upcoming = events.filter(e=>e.days<=90);
+
+const upcomingList = document.getElementById('upcoming-list');
+if(upcoming.length===0){
+  upcomingList.innerHTML = '<div class="empty">Nothing in the next 90 days.</div>';
+} else {
+  upcoming.forEach(e=>{
+    const d = e.date;
+    const div = document.createElement('div');
+    div.className = 'row-card';
+    div.innerHTML = `
+      <div class="datebox"><div class="num">${d.getDate()}</div><div class="mon">${MONTHS[d.getMonth()]}</div></div>
+      <div class="who">
+        <div class="name">${e.person.name} <span class="tag ${e.type==='Birthday'?'bday':'anniv'}">${e.type}</span></div>
+        <div class="sub">${e.person.position} \u2014 ${e.person.company}</div>
+      </div>
+      <div class="right-meta">
+        <div class="days-left ${e.days<=14?'soon':''}">${e.days===0?'Today':e.days+' days'}</div>
+      </div>`;
+    upcomingList.appendChild(div);
+  });
+}
+document.getElementById('c-upcoming').textContent = upcoming.length;
+
+// ---------- Build Gift Suggestions tab ----------
+const giftsList = document.getElementById('gifts-list');
+DATA.forEach(p=>{
+  const tYears = parseTenureYears(p.tenure, p.name);
+  const tBand = tenureBand(tYears);
+  const pTier = positionTier(p.position);
+  const card = document.createElement('div');
+  card.className = 'gift-card';
+  card.style.setProperty('--swatch', swatchFor(p.color));
+  card.innerHTML = `
+    <div class="name">${p.name}</div>
+    <div class="role">${p.position} \u2014 ${p.company}</div>
+    <div class="chips">
+      <span class="chip">${tYears===null?'Tenure unknown':tBand.label}</span>
+      <span class="chip">${pTier.label}</span>
+      <span class="chip">${p.color||'no color on file'}</span>
+      <span class="chip">${p.food||'no food pref on file'}</span>
+    </div>
+    <div class="suggestion">${giftSuggestion(p, tYears, tBand, pTier)}</div>
+  `;
+  giftsList.appendChild(card);
+});
+document.getElementById('c-gifts').textContent = DATA.length;
+
+// ---------- Build Needs Attention tab ----------
+const flags = [];
+DATA.forEach(p=>{
+  const tYears = parseTenureYears(p.tenure, p.name);
+  if(tYears===null) flags.push(`<b>${p.name}</b> \u2014 tenure text ("${p.tenure}") couldn't be parsed into a number of years.`);
+  const dobMD = parseMD(p.dob);
+  if(dobMD && dobMD.year > 2020) flags.push(`<b>${p.name}</b> \u2014 birth year on file is ${dobMD.year}, almost certainly a data-entry error.`);
+  if(dobMD && dobMD.year < 1900) flags.push(`<b>${p.name}</b> \u2014 birth year on file is ${dobMD.year}, almost certainly a data-entry error.`);
+  if((!p.color || /^(none|na|n\/a)$/i.test(p.color)) ) flags.push(`<b>${p.name}</b> \u2014 no favorite color on file; gift suggestion defaulted.`);
+  if((!p.food || /^(none|na|n\/a|any)$/i.test(p.food))) flags.push(`<b>${p.name}</b> \u2014 no usable favorite food on file; gift suggestion defaulted.`);
+  if(p.status==="Married" && !p.anniv) flags.push(`<b>${p.name}</b> \u2014 marked Married but no anniversary date on file.`);
+});
+const dupNames = RAW.filter(r=>DATA.filter(d=>d.name===r.name).length && RAW.filter(x=>x.name===r.name).length>1).map(r=>r.name);
+[...new Set(dupNames)].forEach(n=>flags.push(`<b>${n}</b> \u2014 appears in the sheet more than once; the most recent submission was used, older one ignored.`));
+INCOMPLETE.forEach(n=>flags.push(`<b>${n}</b> \u2014 entry has no timestamp and is missing most fields (company, contact, favorites). Looks like an incomplete/manually-added stub, not a real form submission. Excluded from the board above.`));
+
+const flagsList = document.getElementById('flags-list');
+if(flags.length===0){
+  flagsList.innerHTML = '<div class="empty">No data issues detected.</div>';
+} else {
+  flags.forEach(f=>{
+    const d = document.createElement('div');
+    d.className = 'flag-card';
+    d.innerHTML = f;
+    flagsList.appendChild(d);
+  });
+}
+document.getElementById('c-flags').textContent = flags.length;
+
+// ---------- Tabs ----------
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
