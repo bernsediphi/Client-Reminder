@@ -171,6 +171,7 @@
 </div>
 
 <script>
+// ---BEGIN-RAW-DATA---
 // ---------- Raw data pulled from the Google Form response sheet ----------
 const RAW = [
  {ts:"7/8/2024",name:"Josh Ong",status:"Married",dob:"3/12/1981",anniv:"12/2/2017",color:"purple",food:"Pasta",company:"Ediphi Training Programs Inc.",position:"Recruitment Manager",tenure:"6months"},
@@ -201,6 +202,7 @@ const INCOMPLETE = [
   "Dr. Leomar Jay R. Oblianda","Dean Joji","Dr. Gileth Maraquilla","Raffy Yroma","Maricel Diaz",
   "Carolina Roces","Rhea Adriatico"
 ];
+// ---END-RAW-DATA---
 
 // ---------- Dedup: keep latest timestamp per name ----------
 function dedupe(rows){
@@ -222,7 +224,7 @@ function parseMD(str){
   return {month:parseInt(m[1],10), day:parseInt(m[2],10), year:parseInt(m[3],10)};
 }
 function nextOccurrence(md){
-  const today = new Date("2026-07-15"); today.setHours(0,0,0,0);
+  const today = new Date(); today.setHours(0,0,0,0);
   if(!md || md.month<1 || md.month>12 || md.day<1 || md.day>31) return null;
   let year = today.getFullYear();
   let d = new Date(year, md.month-1, md.day);
@@ -243,7 +245,7 @@ function parseTenureYears(str, name){
     const startedMatch = s.match(/started.*?(\w+ \d{1,2},? \d{4})/);
     if(startedMatch){
       const start = new Date(startedMatch[1]);
-      if(!isNaN(start)){ years = (new Date("2026-07-15") - start)/(365.25*86400000); found=true; }
+      if(!isNaN(start)){ years = (new Date() - start)/(365.25*86400000); found=true; }
     }
   }
   if(!found){
